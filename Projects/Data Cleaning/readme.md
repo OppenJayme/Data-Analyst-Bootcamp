@@ -1,24 +1,23 @@
-# Layoffs Data Cleaning in MySQL
+# Layoffs Data Cleaning in MySQL Workbench
 
-This project focuses on cleaning a layoffs dataset in MySQL to make it more reliable, analysis-ready, and easier to visualize. The workflow preserves the raw table, uses staging tables for transformations, and applies a structured cleaning process covering duplicates, standardization, null handling, and unnecessary records.
+Performed end-to-end data cleaning in MySQL Workbench on a layoffs dataset by creating staging tables, removing duplicates with `ROW_NUMBER()`, standardizing inconsistent text values, converting dates, and resolving missing values. The result was a cleaner, more reliable dataset prepared for downstream analysis and visualization.
 
 ## Project Objective
 
-The goal of this project was to take raw layoffs data and transform it into a cleaner and more usable dataset for downstream analysis and visualization.
+The goal of this project was to transform raw layoffs data into a cleaner and more usable dataset for analysis.
 
 The cleaning process focused on four core tasks:
 
 1. Remove duplicates
 2. Standardize the data
 3. Handle null and blank values
-4. Remove unnecessary rows and preserve raw data through staging
+4. Remove unnecessary rows while preserving the raw data through staging tables
 
 ## Tools Used
 
+- MySQL Workbench
 - MySQL
-- SQL window functions
-- Common data cleaning techniques
-- Staging tables for safe transformations
+- SQL
 
 ## Dataset Overview
 
@@ -36,13 +35,13 @@ The dataset contains company layoff information with fields such as:
 
 ## Cleaning Workflow
 
-### 1. Created a staging table
+### 1. Created staging tables
 
-Instead of cleaning the raw `layoffs` table directly, I first created a staging table and copied the original data into it. This follows a safer workflow and keeps the raw dataset intact.
+Instead of cleaning the raw `layoffs` table directly, I first created staging tables and copied the original data into them. This preserved the raw dataset and allowed the cleaning steps to be performed safely.
 
 ### 2. Removed duplicates
 
-To identify duplicate records, I used `ROW_NUMBER()` with `PARTITION BY` across multiple columns including:
+To identify duplicate records, I used `ROW_NUMBER()` with `PARTITION BY` across multiple columns, including:
 
 - company
 - location
@@ -54,7 +53,7 @@ To identify duplicate records, I used `ROW_NUMBER()` with `PARTITION BY` across 
 - country
 - funds_raised_millions
 
-Because MySQL does not allow deleting directly from a CTE in this workflow, I created a new staging table and inserted the data with row numbers, then removed rows where the duplicate counter was greater than 1.
+Because deleting directly from a CTE was not practical in this workflow, I created a new staging table, inserted the data with row numbers, and removed records where the duplicate counter was greater than 1.
 
 ### 3. Standardized values
 
@@ -68,7 +67,7 @@ I cleaned and standardized inconsistent values across several columns:
 
 ### 4. Handled null and blank values
 
-I reviewed records with missing values and treated them based on whether they could be reliably recovered.
+I reviewed records with missing values and handled them based on whether they could be reliably recovered.
 
 For missing `industry` values:
 - blank strings were converted to `NULL`
@@ -81,7 +80,7 @@ For records where both `total_laid_off` and `percentage_laid_off` were missing:
 
 After cleaning:
 - duplicate-tracking helper columns were removed
-- the final cleaned dataset remained in the staging table
+- the cleaned dataset remained in the staging table
 - the raw table was preserved
 
 ## Key SQL Techniques Used
@@ -89,7 +88,7 @@ After cleaning:
 - `CREATE TABLE ... LIKE`
 - `INSERT INTO ... SELECT`
 - `ROW_NUMBER() OVER (PARTITION BY ...)`
-- `CTE` for duplicate inspection
+- `CTE`
 - `TRIM()`
 - `TRIM(TRAILING ...)`
 - `LIKE`
@@ -97,25 +96,13 @@ After cleaning:
 - `ALTER TABLE`
 - `UPDATE ... JOIN`
 - `DELETE`
-- staging-table workflow
-
-## What I Learned
-
-This project reinforced several important data cleaning principles:
-
-- never clean the raw dataset directly if you can avoid it
-- staging tables are useful for safe, repeatable transformations
-- duplicates should be checked across the full business-relevant grain of the data
-- standardizing text values is critical before analysis
-- null values should only be filled when there is enough evidence to do so
-- some rows should be removed when they do not contribute meaningful information
 
 ## Final Output
 
-The final result is a cleaner layoffs dataset that is more suitable for exploratory analysis, reporting, and visualization.
+The final output is a cleaner layoffs dataset that is more consistent, more reliable, and better suited for exploratory analysis and visualization.
 
 ## Files
 
-- `not so clean notes.pdf` – project notes and cleaning process explanation
-- SQL script / queries – full MySQL cleaning workflow
-- `README.md` – project documentation
+- `not so clean notes.pdf` - project notes and cleaning walkthrough
+- SQL queries / script - full MySQL Workbench cleaning workflow
+- `README.md` - project documentation
